@@ -1,0 +1,29 @@
+GET http://localhost:3001/api
+
+###
+
+POST http://localhost:3001/api
+Content-Type: application/json
+
+{
+    "message": "test1"
+}
+
+###
+
+PUT http://localhost:3001/api
+Content-Type: application/json
+
+{
+    "old_message": "test4",
+    "new_message": "test5"
+}
+
+###
+
+DELETE http://localhost:3001/api
+Content-Type: application/json
+
+{
+    "message": "test5"
+}
