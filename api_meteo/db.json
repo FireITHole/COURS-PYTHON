@@ -1,0 +1,21 @@
+[
+    {
+        "06/11/2023-14h00": {
+            "city": "strasbourg",
+            "data": {
+                "temperature": 12.2,
+                "humidity": 65,
+                "apparent_temp": 9.0,
+                "precipitation": 0.0,
+                "wind_speed": 15.0
+            },
+            "units": {
+                "temperature": "\u00b0C",
+                "humidity": "%",
+                "apparent_temp": "\u00b0C",
+                "precipitation": "mm",
+                "wind_speed": "km/h"
+            }
+        }
+    }
+]
