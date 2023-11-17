@@ -3,7 +3,7 @@ from yaml import safe_load
 from datetime import datetime
 from json import dumps, loads
 
-# URL Doc API Géolocalisation : https://openweathermap.org/api/geocoding-api#direct
+# URL Doc API Géolocalisation : https://openweathermap.org/api/geocoding-api
 
 with open("secret.yaml") as file:
     SECRETS = safe_load(file)
@@ -37,7 +37,7 @@ class Weather:
     - Précipitation : {self.precipitation}{self.precipitation_unit}\n\
     - Vitesse du vent : {self.windspeed}{self.windspeed_unit}"
 
-    def get_weather_data(self, city: str) -> dict:
+    def get_weather_data(self, city: str) -> (dict, dict):
         GEOLOC_URL = f"http://api.openweathermap.org/geo/1.0/direct?q={city}&appid={GEOLOC_API_KEY}"
         geoloc_res = requests.get(GEOLOC_URL)
         geoloc_res = geoloc_res.json()
@@ -49,7 +49,7 @@ class Weather:
         weather_res = requests.get(WEATHER_URL)
         weather_res = weather_res.json()
 
-        return weather_res["current"], weather_res["current_units"]
+        return (weather_res["current"], weather_res["current_units"])
 
     def get_city(self) -> str:
         return self.city

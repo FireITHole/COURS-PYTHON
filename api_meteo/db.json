@@ -17,5 +17,43 @@
                 "wind_speed": "km/h"
             }
         }
+    },
+    {
+        "16/11/2023-08h00": {
+            "city": "strasbourg",
+            "data": {
+                "temperature": 6.9,
+                "humidity": 88,
+                "apparent_temp": 4.6,
+                "precipitation": 0.0,
+                "wind_speed": 7.8
+            },
+            "units": {
+                "temperature": "\u00b0C",
+                "humidity": "%",
+                "apparent_temp": "\u00b0C",
+                "precipitation": "mm",
+                "wind_speed": "km/h"
+            }
+        }
+    },
+    {
+        "17/11/2023-15h00": {
+            "city": "strasbourg",
+            "data": {
+                "temperature": 8.2,
+                "humidity": 85,
+                "apparent_temp": 6.3,
+                "precipitation": 0.5,
+                "wind_speed": 6.3
+            },
+            "units": {
+                "temperature": "\u00b0C",
+                "humidity": "%",
+                "apparent_temp": "\u00b0C",
+                "precipitation": "mm",
+                "wind_speed": "km/h"
+            }
+        }
     }
 ]
