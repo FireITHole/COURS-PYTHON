@@ -1,0 +1,59 @@
+version: "3.8"
+
+services:
+  server:
+    build:
+      context: ./server
+    ports:
+      - 8000:8000
+    environment:
+      - port=8000
+      - DB_IP=172.18.0.3
+      - DB_USER=fireithole
+      - DB_PWD=charli
+    restart: unless-stopped
+    networks:
+      db-network:
+        ipv4_address: 172.18.0.2
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: python-db
+      POSTGRES_USER: fireithole
+      POSTGRES_PASSWORD: charli
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      db-network:
+        ipv4_address: 172.18.0.3
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: antoine.arnoux67pro@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: charli
+      PGADMIN_LISTEN_PORT: 5050
+    ports:
+      - "5050:5050"
+    depends_on:
+      - postgres
+    networks:
+      db-network:
+        ipv4_address: 172.18.0.4
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+
+networks:
+  db-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16
+
+volumes:
+  pgadmin:

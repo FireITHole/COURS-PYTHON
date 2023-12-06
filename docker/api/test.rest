@@ -1,0 +1,26 @@
+POST http://localhost:8000/api
+Content-Type: application/json
+
+{
+    "message": "test2"
+}
+
+###
+GET http://localhost:8000/api
+
+###
+PUT http://localhost:8000/api
+Content-Type: application/json
+
+{
+    "old_message": "test",
+    "new_message": "test2"
+}
+
+###
+DELETE http://localhost:8000/api
+Content-Type: application/json
+
+{
+    "message": "test2"
+}

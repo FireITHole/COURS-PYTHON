@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: db-only
+      POSTGRES_USER: fireithole
+      POSTGRES_PASSWORD: charli
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - db-network
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: antoine.arnoux67pro@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: charli
+      PGADMIN_LISTEN_PORT: 5050
+    ports:
+      - "5050:5050"
+    depends_on:
+      - postgres
+    networks:
+      - db-network
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+
+networks:
+  db-network:
+    driver: bridge
+
+volumes:
+  pgadmin:
