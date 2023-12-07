@@ -23,6 +23,6 @@ class Logger:
     
     def error(self, log: str) -> None:
         self._write_log("ERROR", log)
-    
+
     def critical(self, log: str) -> None:
         self._write_log("CRITICAL", log)

@@ -8,15 +8,11 @@ DB_PARAMS = {
     "port": 5432,
 }
 
-def connectToDb():
-    try:
-        connection = psycopg2.connect(**DB_PARAMS)
-        return connection
-    except Exception as error:
-        print(f"Couldn't connect to DB : {error}")
-        exit(1)
-
-connexion = connectToDb()
+try:
+    connexion = psycopg2.connect(**DB_PARAMS)
+except Exception as error:
+    print(f"Couldn't connect to DB : {error}")
+    exit(1)
 
 try:
     with connexion.cursor() as cursor:

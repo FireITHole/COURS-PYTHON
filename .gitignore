@@ -1,2 +1,3 @@
 docker/api/db
 docker/db-only/db
+.vscode/settings.json
