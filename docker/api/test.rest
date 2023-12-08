@@ -2,7 +2,7 @@ POST http://localhost:8000/api
 Content-Type: application/json
 
 {
-    "message": "test2"
+    "message": "Ceci est un message d'un client vers le server"
 }
 
 ###
@@ -13,8 +13,8 @@ PUT http://localhost:8000/api
 Content-Type: application/json
 
 {
-    "old_message": "test",
-    "new_message": "test2"
+    "old_message": "test2",
+    "new_message": "test3"
 }
 
 ###
@@ -22,5 +22,5 @@ DELETE http://localhost:8000/api
 Content-Type: application/json
 
 {
-    "message": "test2"
+    "message": "test3"
 }

@@ -16,7 +16,9 @@ except Exception as error:
 
 try:
     with connexion.cursor() as cursor:
-        cursor.execute("INSERT INTO logs (level, log) VALUES ('CRITICAL', 'A problem happened')")
+        level = "ERROR"
+        log = "L'application s'est plantée"
+        cursor.execute("INSERT INTO logs (level, log) VALUES (%s, %s)", (level, log))
         connexion.commit()
 except Exception as error:
     print(f"Couldn't execute query: {error}")
