@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="{{url_for('static', filename='index.js')}}"></script>
+    <link rel="stylesheet" href="{{url_for('static', filename='index.css')}}">
+    <title>Raspberry Pi Domotic</title>
+</head>
+
+<body>
+    <div class="wrapper-center">
+        <div class="flex-center-col">
+            <h1>Page de contrôle de la Pi</h1>
+            <p>Statut de la LED : <b id="led_status">{{led_status}}</b></p>
+            <p>Statut du bouton : <b id="button_status">{{button_status}}</b></p>
+            <div class="flex-center-col">
+                <form action="/" method="post">
+                    <button type="submit">Changer l'état de la LED via form</button>
+                </form>
+                <button onclick="toggleLed()">Changer l'état de la LED via js</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -23,6 +23,11 @@ Disponible sur le support de [Docker](https://docs.docker.com/?_gl=1*16b3y1f*_ga
 
 ### Installation
 - Windows/Mac/Linux : Suivre instructions sur le site de [Docker](https://www.docker.com/products/docker-desktop/)
+- Ubuntu server via script d'installation :
+    ```
+    curl -fsSL https://get.docker.com -o get-docker.sh
+    sudo sh get-docker.sh
+    ```
 
 ### Docker Compose
 **Docker Compose** est un plugin de **Docker** permettant de créer des fichiers de configuration pour lancer plusieurs conteneurs en même temps, ainsi que définir des variables d'environnements dans un fichier et non via des commandes. Cet outil est particulièrement puissant car il permet de lancer plusieurs applications en même temps via 1 commande, et les arrêter via une autre. Docker compose permet également la gestion des **réseaux Docker** et des **Volumes**. Docker Compose est inclut dans l'installation de *Docker Desktop* par défaut. Les commandes docker-compose commencent toujours par `docker-compose` ou `docker compose` (en fonction de l'installation)
