@@ -4,22 +4,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://upload.wikimedia.org/wikipedia/fr/thumb/3/3b/Raspberry_Pi_logo.svg/948px-Raspberry_Pi_logo.svg.png?20171015132127">
     <script src="{{url_for('static', filename='index.js')}}"></script>
     <link rel="stylesheet" href="{{url_for('static', filename='index.css')}}">
-    <title>Raspberry Pi Domotic</title>
+    <title>Domotique Pi</title>
 </head>
 
 <body>
     <div class="wrapper-center">
         <div class="flex-center-col">
-            <h1>Page de contrôle de la Pi</h1>
-            <p>Statut de la LED : <b id="led_status">{{led_status}}</b></p>
-            <p>Statut du bouton : <b id="button_status">{{button_status}}</b></p>
-            <div class="flex-center-col">
-                <form action="/" method="post">
-                    <button type="submit">Changer l'état de la LED via form</button>
+            <h1 class="margin-bottom-40">Page de contrôle de la Pi</h1>
+            <div class="flex-center-col box-shadow margin-bottom-20">
+                <span class="align-left margin-bottom-10">Status</span>
+                <div class="flex-center-row space-between width-100 margin-bottom-10">
+                    <p>Statut de la LED :</p>
+                    <strong id="led_status">{{led_status}}</strong>
+                </div>
+                <div class="flex-center-row space-between width-100">
+                    <p>Statut du bouton :</p>
+                    <strong id="button_status">{{button_status}}</strong>
+                </div>
+            </div>
+            <div class="flex-center-col box-shadow">
+                <span class="align-left margin-bottom-10">Actions</span>
+                <form action="/" method="post" class="margin-bottom-10 width-100">
+                    <button type="submit" class="width-100">Changer l'état de la LED via form</button>
                 </form>
-                <button onclick="toggleLed()">Changer l'état de la LED via js</button>
+                <button class="width-100 margin-bottom-10" onclick="toggleLed()">Changer l'état de la LED via js</button>
             </div>
         </div>
     </div>

@@ -15,37 +15,39 @@ GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.output(led_pin, GPIO.LOW)
 
 
+def getLedStatus() -> str:
+    return "ON" if GPIO.input(led_pin) == GPIO.HIGH else "OFF"
+
+
+def getButtonStatus() -> str:
+    return "PRESSED" if GPIO.input(button_pin) == GPIO.LOW else "RELEASED"
+
+
+def toggleLed() -> None:
+    if getLedStatus() == "ON":
+        GPIO.output(led_pin, GPIO.LOW)
+    else:
+        GPIO.output(led_pin, GPIO.HIGH)
+
+
 @app.route("/", methods=["GET", "POST"])
 def indexRoute():
     match request.method:
         case "GET":
-            led_status = "ON" if GPIO.input(led_pin) == GPIO.HIGH else "OFF"
-            button_status = (
-                "PRESSED" if GPIO.input(button_pin) == GPIO.LOW else "RELEASED"
-            )
             return render_template(
-                "index.html", led_status=led_status, button_status=button_status
+                "index.html", led_status=getLedStatus(), button_status=getButtonStatus()
             )
         case "POST":
-            led_status = "ON" if GPIO.input(led_pin) == GPIO.HIGH else "OFF"
-            if led_status == "ON":
-                GPIO.output(led_pin, GPIO.LOW)
-            else:
-                GPIO.output(led_pin, GPIO.HIGH)
-            led_status = "ON" if GPIO.input(led_pin) == GPIO.HIGH else "OFF"
-            button_status = (
-                "PRESSED" if GPIO.input(button_pin) == GPIO.LOW else "RELEASED"
-            )
+            toggleLed()
             return render_template(
-                "index.html", led_status=led_status, button_status=button_status
+                "index.html", led_status=getLedStatus(), button_status=getButtonStatus()
             )
 
 
 @app.route("/button")
 def buttonRoute():
-    button_status = "PRESSED" if GPIO.input(button_pin) == GPIO.LOW else "RELEASED"
     return (
-        {"status": button_status},
+        {"status": getButtonStatus()},
         200,
         {"Content-Type": "application/json"},
     )
@@ -55,21 +57,15 @@ def buttonRoute():
 def ledRoute():
     match request.method:
         case "GET":
-            led_status = "ON" if GPIO.input(led_pin) == GPIO.HIGH else "OFF"
             return (
-                {"status": led_status},
+                {"status": getLedStatus()},
                 200,
                 {"Content-Type": "application/json"},
             )
         case "POST":
-            led_status = "ON" if GPIO.input(led_pin) == GPIO.HIGH else "OFF"
-            if led_status == "ON":
-                GPIO.output(led_pin, GPIO.LOW)
-            else:
-                GPIO.output(led_pin, GPIO.HIGH)
-            led_status = "ON" if GPIO.input(led_pin) == GPIO.HIGH else "OFF"
+            toggleLed()
             return (
-                {"status": led_status},
+                {"status": getLedStatus()},
                 200,
                 {"Content-Type": "application/json"},
             )

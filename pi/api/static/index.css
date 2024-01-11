@@ -1,5 +1,8 @@
-body {
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+body, h1, h2, h3, p {
     margin: 0;
+    font-family: 'Roboto', sans-serif;
 }
 
 .wrapper-center {
@@ -16,4 +19,72 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+}
+
+.flex-center-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.space-between {
+    justify-content: space-between;
+}
+
+.margin-bottom-10 {
+    margin-bottom: 10px;
+}
+
+.margin-bottom-20 {
+    margin-bottom: 20px;
+}
+
+.margin-bottom-30 {
+    margin-bottom: 30px;
+}
+
+.margin-bottom-40 {
+    margin-bottom: 40px;
+}
+
+.margin-left-5 {
+    margin-left: 5px;
+}
+
+.box-shadow {
+    width: 300px;
+    background-color: rgba(211, 211, 211, .15);
+    border-radius: 20px;
+    padding: 15px;
+    box-shadow: 0px 5px 10px rgba(0,0,0,.3);
+}
+
+.box-shadow span {
+    font-weight: bold;
+    opacity: .25;
+}
+
+.align-left {
+    align-self: flex-start;
+}
+
+.width-100 {
+    width: 100%;
+}
+
+button {
+    border: none;
+    background-color: brown;
+    color: white;
+    text-transform: uppercase;
+    padding: 10px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+    transition: all .4s;
+}
+
+button:hover {
+    cursor: pointer;
+    transform: scale(1.025);
 }
