@@ -20,3 +20,7 @@ print(liste_brut)
 
 liste_brut.remove("framboise") # Supprime un élément par sa valeur (renvoi une erreur si le paramètre de la fonction remove n'est aps un élément de la liste)
 print(liste_brut)
+
+phrase_liste = ["il", "fait", "beau", "dehors"]
+phrase = " ".join(phrase_liste) # Inverse de .split(), permet de créer un str à partir d'une liste
+print(phrase)
