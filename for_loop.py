@@ -1,8 +1,7 @@
-liste_brut = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-liste_resultat = []
+liste_fruit = ["banane", "pomme", "framboise", "poire", "cerise"]
 
-for element in liste_brut:
-    liste_resultat.append(element * 2)
+for fruit in liste_fruit:
+    print(fruit)
 
-for element_2 in liste_resultat:
-    print(f"L'élément actuel est : {element_2}")
+for index in range(len(liste_fruit)):
+    print(liste_fruit[index])
