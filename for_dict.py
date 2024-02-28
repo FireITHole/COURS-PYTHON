@@ -1,4 +1,6 @@
-dict_brut = {"Alpha1": "ABC", "Alpha2": "DEF", "Alpha3": "GHI"}
+dict_brut = {"Alpha1": 0, "Alpha2": "DEF", "Alpha3": "GHI"}
+
+print(dict_brut)
 
 # Ittérer à travers clés et vals
 for key, val in dict_brut.items():

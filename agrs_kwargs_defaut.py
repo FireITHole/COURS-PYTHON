@@ -1,7 +1,12 @@
 # *args permet de recevoir un nombre non connu d'arguments
 def somme(*args):
-    return sum(args)
+    result = 0
+    for arg in args:
+        result += arg
+    return result
 
+
+print(somme(1, 2, 3, 4))
 
 liste: list = [2, 3, 4, 5]
 liste_2: list = [6, 7, 8, 9]
@@ -17,6 +22,8 @@ liste_2: list = [6, 7, 8, 9]
 def print_values(**kwargs):
     for key, val in kwargs.items():
         print(f"{key} : {val}")
+
+print_values(test="123", autre_test="456")
 
 
 # Possible d'utiliser *args et **kwargs simultanement dans une même définition de méthode
