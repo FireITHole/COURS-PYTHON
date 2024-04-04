@@ -169,7 +169,7 @@ if __name__ == "__main__":
         else:
             system('clear')
 
-    def joueur_partie(player_1: Player, player_2: Player) -> None:
+    def jouer_partie(player_1: Player, player_2: Player) -> None:
         jeu = TicTacToe(player_1, player_2)
         
         clear_screen()
@@ -205,7 +205,7 @@ if __name__ == "__main__":
             exit(0)
     
         del jeu
-        joueur_partie(player_1, player_2)
+        jouer_partie(player_1, player_2)
 
     def main() -> None:
         clear_screen()
@@ -216,6 +216,6 @@ if __name__ == "__main__":
         player_1: Player = Player(input("\nQuels sont les noms des joueurs ?\nJoueur 1 : "))
         player_2: Player = Player(input("Joueur 2 : "))
 
-        joueur_partie(player_1, player_2)
+        jouer_partie(player_1, player_2)
     
     main()
