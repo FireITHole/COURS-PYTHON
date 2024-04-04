@@ -65,6 +65,15 @@ print(resultat)
 # Méthode compréhension de liste
 print([nombre for liste in data for nombre in liste])
 
+data = [[[1, 2, 3]], [[4, 5, 6]]]
+
+resultat = []
+for liste in data:
+    for sub_liste in liste:
+        for nombre in sub_liste:
+            resultat.append(nombre)
+print(resultat)
+
 # Résultat devrait être : [1, 2, 3, 4, 5, 6]
 
 # Exercice 5
@@ -184,3 +193,11 @@ print(resultat)
 print([element for pair in zip(data[0], data[1]) for element in pair])
 
 # Résultat devrait être : [1, 'a', 2, 'b', 3, 'c']
+
+liste_1 = ["Prénom", "Nom", "Age"]
+liste_2 = ["Simon", "Le Guidec", 34]
+
+def concat(liste_cles: list[str], liste_valeurs: list[str]) -> dict:
+    return {cle: valeur for cle, valeur in zip(liste_cles, liste_valeurs)}
+
+print(concat(liste_1, liste_2))

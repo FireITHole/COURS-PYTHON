@@ -175,6 +175,9 @@ foreignAccount = bankOfAmerica.create_bank_account("foreign account", 500, antoi
 livretEpargne = banqueDeFrance.create_bank_account("livret épargne", 1000, john)
 checkingAccount = bankOfAmerica.create_bank_account("checking account", 700, john)
 
+livretA - 500
+print(livretA)
+
 print(banqueDeFrance)
 print(bankOfAmerica)
 

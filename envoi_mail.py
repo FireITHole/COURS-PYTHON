@@ -39,7 +39,4 @@ class Email:
 
 
 # Exemple d'utilisation
-"""
-email = Email("noreplyalertefacture@gmail.com", "uxwrotstgalwubfa")
-email.envoyer_mail("antoine.arnoux67@hotmail.fr", "test", "Bonjour !\nComment ça va ?")
-"""
+

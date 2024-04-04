@@ -29,6 +29,10 @@ class Artiste:
         self._albums: list[Album] = []
         self._titres:list[Titre] = []
 
+    @property
+    def titre(self):
+        return self._titre
+
     def ajouter_album(self, album: Album) -> None:
         self._albums.append(album)
 

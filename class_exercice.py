@@ -56,6 +56,9 @@ class Bibliotheque:
         
         livre.toggle_emprunte()
         print(f"Le livre {livre.get_titre()} a été rendu.")
+
+    def get_livres(self) -> list[Livre]:
+        return self.livres
         
     def __repr__(self) -> str:
     #   Méthode standard
@@ -67,13 +70,44 @@ class Bibliotheque:
         return f"Voici les livres de notre bibliothèque {self.nom} : \n{livres_str}"
 
 
-harry_potter_1 = Livre("Harry Potter 1", "J.K.R")
-seigneur_des_anneaux = Livre("Le seigneur des anneaux", "Tolkien")
-print(harry_potter_1)
-print(seigneur_des_anneaux)
-biblio = Bibliotheque("Malraux")
-biblio.ajouter_livre(harry_potter_1)
-biblio.ajouter_livre(seigneur_des_anneaux)
-biblio.emprunter_livre(harry_potter_1)
-print(harry_potter_1)
-print(biblio)
+""" bibliotheque = Bibliotheque("Maison")
+
+
+while True:
+    choix = input("Ajouter ou voir les livres (a/v) : ")
+
+    match choix:
+        case "a":
+            titre = input("Titre : ")
+            auteur = input("Auteur : ")
+            livre = Livre(titre, auteur)
+            bibliotheque.ajouter_livre(livre)
+        case "v":
+            print(bibliotheque) """
+
+if __name__ == "__main__":
+    liste_livre: list[Livre] = []
+    
+    while True:
+        choix = input("Ajouter ou voir les livres (a/v) : ")
+
+        match choix:
+            case "a":
+                titre = input("Titre : ")
+                auteur = input("Auteur : ")
+                liste_livre.append(Livre(titre, auteur))
+            case "v":
+                for livre in liste_livre:
+                    print(livre.get_titre())
+    """
+    harry_potter_1 = Livre("Harry Potter 1", "J.K.R")
+    seigneur_des_anneaux = Livre("Le seigneur des anneaux", "Tolkien")
+    
+     print(harry_potter_1)
+    print(seigneur_des_anneaux)
+    biblio = Bibliotheque("Malraux")
+    biblio.ajouter_livre(harry_potter_1)
+    biblio.ajouter_livre(seigneur_des_anneaux)
+    biblio.emprunter_livre(harry_potter_1)
+    print(harry_potter_1)
+    print(biblio) """

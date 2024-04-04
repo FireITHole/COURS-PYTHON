@@ -4,7 +4,7 @@ services:
   postgres:
     image: postgres:latest
     environment:
-      POSTGRES_DB: db-only
+      POSTGRES_DB: messages
       POSTGRES_USER: fireithole
       POSTGRES_PASSWORD: charli
     volumes:

@@ -1,3 +1,5 @@
 docker/api/db
 docker/db-only/db
+docker/db-only/venv
 .vscode/settings.json
+db/venv
