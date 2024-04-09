@@ -1,4 +1,4 @@
-from random import randint
+from random import randint, sample
 from os import path, makedirs
 from time import time
 import sys
@@ -314,77 +314,94 @@ class Labyrinthe:
             debut = time()
             result = f(*args, **kwargs)
             fin = time()
-            print(f"Temps d'execution : {timedelta(seconds = fin - debut)}")
+            print(f"Temps d'execution de '{f.__name__}' : {timedelta(seconds = fin - debut)}")
             return result
         return wrapper
     
     @staticmethod
     def _progress_bar(percent: float, nb_iter_per_sec: int, nb_iters_left: int) -> None:
         bar_length = 50
-        sys.stdout.write(f'{" " * 100}\r')
         if nb_iter_per_sec:
-            sys.stdout.write("Completed: [{:{}}] {:>3}% ({} restant | {:,} ouvertures/s | {:,} ouvertures restantes)".format('=' * int(percent/(100.0/bar_length)), bar_length, int(percent), timedelta(seconds=round(nb_iters_left / nb_iter_per_sec)), nb_iter_per_sec, nb_iters_left))
-        else:    
-            sys.stdout.write("Completed: [{:{}}] {:>3}%".format('=' * int(percent/(100.0/bar_length)), bar_length, int(percent)))
-        sys.stdout.flush()
-    
+            sys.stdout.write("\033[F") # Monte le curseur
+            sys.stdout.flush()
+            sys.stdout.write("\rCompleted: [{:{}}] {:>3}%\n({} restant | {:,} ouvertures/s | {:,} ouvertures restantes){}".format('=' * int(percent/(100.0/bar_length)), bar_length, int(percent), timedelta(seconds=round(nb_iters_left / nb_iter_per_sec)), nb_iter_per_sec, nb_iters_left, ' ' * 5))
+            sys.stdout.flush()
+        else:
+            sys.stdout.write("\rCompleted: [{:{}}] {:>3}%".format('=' * int(percent/(100.0/bar_length)), bar_length, int(percent)))
+            sys.stdout.flush()
+
+
     @_timit
     def generate(self) -> None:
-        print("Génération en cours...")
         compteur = 0
         time_last_iter = time()
         nb_iter_last = 0
         nb_iter = 0
         already_seen_cells: list[Cellule] = []
+        available_cells: list[Cellule] = [cell for ligne in self.__grille for cell in ligne]
 
         while compteur < self.__lignes * self.__colonnes - 1:
-            if self.__lignes * self.__colonnes - 1 > 5000:
+            if self.__lignes * self.__colonnes - 1 >= 2499:
                 self._progress_bar(100.0 * compteur / (self.__lignes * self.__colonnes - 1), nb_iter, (self.__lignes * self.__colonnes - 1) - compteur)
             
-            rand_cell_id: int = randint(0, self.__lignes * self.__colonnes - 1)
-            rand_wall: int = randint(0, 3) # 0: n, 1: e, 2: s, 3: w
-            cell = self.__grille[rand_cell_id // self.__colonnes][rand_cell_id % self.__colonnes]
-            cell_walls = [cell.north, cell.east, cell.south, cell.west]
+            cell = available_cells[randint(0, len(available_cells) - 1)]
+            available_walls = [i for i, mur in enumerate([cell.north, cell.east, cell.south, cell.west]) if mur]
+
+            if len(available_walls) <= 2:
+                available_cells.remove(cell)
+                continue
+
             cell_voisins = [cell.n_cell, cell.e_cell, cell.s_cell, cell.w_cell]
 
-            if not cell_voisins[rand_wall]: continue
-            if not cell_walls[rand_wall]: continue
-            if cell_voisins[rand_wall].id == cell.id: continue
+            if all(voisin.id == cell.id for voisin in cell_voisins if voisin):
+                available_cells.remove(cell)
+                continue
+
+            available_walls_rand = sample(available_walls, len(available_walls))
+            selected_wall = 0
+
+            for wall_id in available_walls_rand:
+                if not cell_voisins[wall_id]: continue
+                if cell_voisins[wall_id].id == cell.id: continue
+
+                selected_wall = wall_id
+                break
+            else:
+                available_cells.remove(cell)
+                continue
 
             compteur += 1
-            already_seen_cells.append(cell)
+            if cell not in already_seen_cells: already_seen_cells.append(cell)
 
-            match rand_wall:
+            match selected_wall:
                 case 0:
                     cell.north = False
-                    already_seen_cells.append(cell.n_cell)
+                    if cell.n_cell not in already_seen_cells: already_seen_cells.append(cell.n_cell)
                 case 1:
                     cell.east = False
-                    already_seen_cells.append(cell.e_cell)
+                    if cell.e_cell not in already_seen_cells: already_seen_cells.append(cell.e_cell)
                 case 2:
                     cell.south = False
-                    already_seen_cells.append(cell.s_cell)
+                    if cell.s_cell not in already_seen_cells: already_seen_cells.append(cell.s_cell)
                 case 3:
                     cell.west = False
-                    already_seen_cells.append(cell.w_cell)
-            
+                    if cell.w_cell not in already_seen_cells: already_seen_cells.append(cell.w_cell)
+
             if time() >= time_last_iter + 1:
                 nb_iter = compteur - nb_iter_last
                 nb_iter_last = compteur
                 time_last_iter = time()
 
-            cell_voisin_id = cell_voisins[rand_wall].id
+            cell_voisin_id = cell_voisins[selected_wall].id
 
             for cellule in already_seen_cells:
                 if cellule.id == cell_voisin_id:
                     cellule.id = cell.id
-            
 
-            """ for ligne in self.__grille:
-                for cellule in ligne:
-                    if cellule.id == cell_voisin_id:
-                        cellule.id = cell.id """
-            
+        if self.__lignes * self.__colonnes - 1 >= 2499: print()
+
+        print(len(available_cells))
+
         entree = randint(0, self.__lignes - 1), 0
         sortie = randint(0, self.__lignes - 1), self.__colonnes - 1
 
@@ -392,7 +409,6 @@ class Labyrinthe:
         self.__grille[sortie[0]][sortie[1]].east = False
 
         self.__scrumbled = True
-        print("\nDone !")
 
     
     def save(self, name: str) -> None:
@@ -442,7 +458,38 @@ class Labyrinthe:
 
         return cls(len(new_grille), len(new_grille[0]), new_grille)
                 
+    def _set_resolve(self, resolve_path: list[int]) -> None:
+        for i_cell, cell_id in enumerate(resolve_path):
+            cell = self.__grille[cell_id // self.__colonnes][cell_id % self.__colonnes]
+            if i_cell == 0:
+                if abs(resolve_path[i_cell + 1] - cell_id) == 1:
+                    cell.traverse = 'h'
+                elif resolve_path[i_cell + 1] - cell_id == self.__colonnes:
+                    cell.traverse = 'sw'
+                elif cell_id - resolve_path[i_cell + 1] == self.__colonnes:
+                    cell.traverse = 'wn'
+            elif i_cell == len(resolve_path) - 1:
+                if abs(resolve_path[i_cell - 1] - cell_id) == 1:
+                    cell.traverse = 'h'
+                elif resolve_path[i_cell - 1] - cell_id == self.__colonnes:
+                    cell.traverse = 'es'
+                elif cell_id - resolve_path[i_cell - 1] == self.__colonnes:
+                    cell.traverse = 'ne'
+            else:
+                if abs(resolve_path[i_cell + 1] - cell_id) == 1  and abs(resolve_path[i_cell - 1] - cell_id) == 1:
+                    cell.traverse = 'h'
+                elif not abs(resolve_path[i_cell + 1] - cell_id) % self.__colonnes and not abs(resolve_path[i_cell - 1] - cell_id) % self.__colonnes:
+                    cell.traverse = 'v'
+                elif (cell_id - resolve_path[i_cell - 1] == self.__colonnes and resolve_path[i_cell + 1] - cell_id == 1) or (resolve_path[i_cell - 1] - cell_id == 1 and cell_id - resolve_path[i_cell + 1] == self.__colonnes):
+                    cell.traverse = 'ne'
+                elif (resolve_path[i_cell - 1] - cell_id == self.__colonnes and resolve_path[i_cell + 1] - cell_id == 1) or (resolve_path[i_cell - 1] - cell_id == 1 and resolve_path[i_cell + 1] - cell_id == self.__colonnes):
+                    cell.traverse = 'es'
+                elif (resolve_path[i_cell - 1] - cell_id == self.__colonnes and cell_id - resolve_path[i_cell + 1] == 1) or (cell_id - resolve_path[i_cell - 1] == 1 and resolve_path[i_cell + 1] - cell_id == self.__colonnes):
+                    cell.traverse = 'sw'
+                elif (cell_id - resolve_path[i_cell - 1] == self.__colonnes and cell_id - resolve_path[i_cell + 1] == 1) or (cell_id - resolve_path[i_cell - 1] == 1 and cell_id - resolve_path[i_cell + 1] == self.__colonnes):
+                    cell.traverse = 'wn'
 
+        self.__resolved = True
 
     @_timit
     def resolve(self) -> list[int]:
@@ -494,37 +541,8 @@ class Labyrinthe:
 
         result.append(arrivee_cell.deep_id)
 
-        for i_cell, cell_id in enumerate(result):
-            cell = self.__grille[cell_id // self.__colonnes][cell_id % self.__colonnes]
-            if i_cell == 0:
-                if abs(result[i_cell + 1] - cell_id) == 1:
-                    cell.traverse = 'h'
-                elif result[i_cell + 1] - cell_id == self.__colonnes:
-                    cell.traverse = 'sw'
-                elif cell_id - result[i_cell + 1] == self.__colonnes:
-                    cell.traverse = 'wn'
-            elif i_cell == len(result) - 1:
-                if abs(result[i_cell - 1] - cell_id) == 1:
-                    cell.traverse = 'h'
-                elif result[i_cell - 1] - cell_id == self.__colonnes:
-                    cell.traverse = 'es'
-                elif cell_id - result[i_cell - 1] == self.__colonnes:
-                    cell.traverse = 'ne'
-            else:
-                if abs(result[i_cell + 1] - cell_id) == 1  and abs(result[i_cell - 1] - cell_id) == 1:
-                    cell.traverse = 'h'
-                elif not abs(result[i_cell + 1] - cell_id) % self.__colonnes and not abs(result[i_cell - 1] - cell_id) % self.__colonnes:
-                    cell.traverse = 'v'
-                elif (cell_id - result[i_cell - 1] == self.__colonnes and result[i_cell + 1] - cell_id == 1) or (result[i_cell - 1] - cell_id == 1 and cell_id - result[i_cell + 1] == self.__colonnes):
-                    cell.traverse = 'ne'
-                elif (result[i_cell - 1] - cell_id == self.__colonnes and result[i_cell + 1] - cell_id == 1) or (result[i_cell - 1] - cell_id == 1 and result[i_cell + 1] - cell_id == self.__colonnes):
-                    cell.traverse = 'es'
-                elif (result[i_cell - 1] - cell_id == self.__colonnes and cell_id - result[i_cell + 1] == 1) or (cell_id - result[i_cell - 1] == 1 and result[i_cell + 1] - cell_id == self.__colonnes):
-                    cell.traverse = 'sw'
-                elif (cell_id - result[i_cell - 1] == self.__colonnes and cell_id - result[i_cell + 1] == 1) or (cell_id - result[i_cell - 1] == 1 and cell_id - result[i_cell + 1] == self.__colonnes):
-                    cell.traverse = 'wn'
+        self._set_resolve(result)
 
-        self.__resolved = True
         return result
     
     @_timit
@@ -557,37 +575,8 @@ class Labyrinthe:
 
                 result = result[::-1]
 
-                for i_cell, cell_id in enumerate(result):
-                    cell = self.__grille[cell_id // self.__colonnes][cell_id % self.__colonnes]
-                    if i_cell == 0:
-                        if abs(result[i_cell + 1] - cell_id) == 1:
-                            cell.traverse = 'h'
-                        elif result[i_cell + 1] - cell_id == self.__colonnes:
-                            cell.traverse = 'sw'
-                        elif cell_id - result[i_cell + 1] == self.__colonnes:
-                            cell.traverse = 'wn'
-                    elif i_cell == len(result) - 1:
-                        if abs(result[i_cell - 1] - cell_id) == 1:
-                            cell.traverse = 'h'
-                        elif result[i_cell - 1] - cell_id == self.__colonnes:
-                            cell.traverse = 'es'
-                        elif cell_id - result[i_cell - 1] == self.__colonnes:
-                            cell.traverse = 'ne'
-                    else:
-                        if abs(result[i_cell + 1] - cell_id) == 1  and abs(result[i_cell - 1] - cell_id) == 1:
-                            cell.traverse = 'h'
-                        elif not abs(result[i_cell + 1] - cell_id) % self.__colonnes and not abs(result[i_cell - 1] - cell_id) % self.__colonnes:
-                            cell.traverse = 'v'
-                        elif (cell_id - result[i_cell - 1] == self.__colonnes and result[i_cell + 1] - cell_id == 1) or (result[i_cell - 1] - cell_id == 1 and cell_id - result[i_cell + 1] == self.__colonnes):
-                            cell.traverse = 'ne'
-                        elif (result[i_cell - 1] - cell_id == self.__colonnes and result[i_cell + 1] - cell_id == 1) or (result[i_cell - 1] - cell_id == 1 and result[i_cell + 1] - cell_id == self.__colonnes):
-                            cell.traverse = 'es'
-                        elif (result[i_cell - 1] - cell_id == self.__colonnes and cell_id - result[i_cell + 1] == 1) or (cell_id - result[i_cell - 1] == 1 and result[i_cell + 1] - cell_id == self.__colonnes):
-                            cell.traverse = 'sw'
-                        elif (cell_id - result[i_cell - 1] == self.__colonnes and cell_id - result[i_cell + 1] == 1) or (cell_id - result[i_cell - 1] == 1 and cell_id - result[i_cell + 1] == self.__colonnes):
-                            cell.traverse = 'wn'
+                self._set_resolve(result)
 
-                self.__resolved = True
                 return result
 
             for wall, new_cell in zip([current_cell.north, current_cell.east, current_cell.south, current_cell.west], [current_cell.n_cell, current_cell.e_cell, current_cell.s_cell, current_cell.w_cell]): # Adjacent squares
@@ -610,21 +599,9 @@ class Labyrinthe:
 
 
 if __name__ == "__main__":
-    #lab = Labyrinthe(10, 10)
-    #lab.generate()
-    from os import system
-    from time import sleep
-
-    for x in range(1, 101):
-        system('cls')
-        lab = Labyrinthe(100, 100)
-        lab.generate()
-        lab.save_list(x)
-        print("Simple res...")
-        simple_res = lab.resolve()
-        print("A* res...")
-        a_star_res = lab.resolve_a_star()
-        print(f"Similarité : {simple_res == a_star_res}")
-        if simple_res != a_star_res:
-            raise ValueError("Les deux résolutions ne sont pas égales")
-        sleep(2)
+    lab = Labyrinthe.from_txt('.\\sortie_list\\250x250\\test_list.txt')
+    """ lab = Labyrinthe(20, 20)
+    lab.generate()
+    lab.save_list('test') """
+    #lab.resolve_a_star()
+    print(lab.resolve_a_star())
