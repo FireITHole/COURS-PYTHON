@@ -4,6 +4,7 @@ from time import time
 import sys
 from datetime import timedelta
 from ast import literal_eval
+import matplotlib.pyplot as plt
 
 class Cellule:
     show_resolve = True
@@ -13,6 +14,7 @@ class Cellule:
         self._east = True
         self._south = True
         self._west = True
+        self._visited = False
         self._n_cell = None
         self._e_cell = None
         self._s_cell = None
@@ -25,6 +27,16 @@ class Cellule:
         self._f_cost = 0
         self._parent: "Cellule" | None = parent
 
+    @property
+    def visited(self) -> bool:
+        return self._visited
+    
+    @visited.setter
+    def visited(self, new_value: bool) -> None:
+        if not isinstance(new_value, bool):
+            raise TypeError
+
+        self._visited = new_value
 
     @property
     def g_cost(self) -> int:
@@ -260,6 +272,7 @@ class Labyrinthe:
         self.__scrumbled = False
         self.__resolved = False
         self.__show_resolve = True
+        self.__path: list[int] = []
 
         if not len(grille):
             self.__grille: list[list[Cellule]] = [[Cellule(i_ligne * self.__colonnes + i_colonne) for i_colonne in range(self.__colonnes)] for i_ligne in range(self.__lignes)]
@@ -280,6 +293,18 @@ class Labyrinthe:
         else:
             self.__grille = grille
             self.__scrumbled = True
+
+    @classmethod
+    def fusion(cls, lignes: int, colonnes: int):
+        new_cls = cls(lignes, colonnes)
+        new_cls._fusion()
+        return new_cls
+    
+    @classmethod
+    def exploration(cls, lignes: int, colonnes: int):
+        new_cls = cls(lignes, colonnes)
+        new_cls._exhaustive()
+        return new_cls
 
 
     def __repr__(self) -> str:
@@ -332,7 +357,7 @@ class Labyrinthe:
 
 
     @_timit
-    def generate(self) -> None:
+    def _fusion(self) -> None:
         compteur = 0
         time_last_iter = time()
         nb_iter_last = 0
@@ -400,8 +425,6 @@ class Labyrinthe:
 
         if self.__lignes * self.__colonnes - 1 >= 2499: print()
 
-        print(len(available_cells))
-
         entree = randint(0, self.__lignes - 1), 0
         sortie = randint(0, self.__lignes - 1), self.__colonnes - 1
 
@@ -412,15 +435,58 @@ class Labyrinthe:
 
     
     def save(self, name: str) -> None:
-        makedirs(path.join('.', "sortie", f"{self.__lignes}x{self.__colonnes}"), exist_ok=True)
-        with open(path.join('.', "sortie", f"{self.__lignes}x{self.__colonnes}", f"{name}.txt"), 'w+') as file:
+        makedirs(path.join(path.dirname(__file__), "sortie", f"{self.__lignes}x{self.__colonnes}"), exist_ok=True)
+        with open(path.join(path.dirname(__file__), "sortie", f"{self.__lignes}x{self.__colonnes}", f"{name}.txt"), 'w+') as file:
             file.write(str(self))
 
     def save_list(self, name: str) -> None:
         output_grille = [[(cell.north, cell.east, cell.south, cell.west) for cell in ligne] for ligne in self.__grille]
-        makedirs(path.join('.', "sortie_list", f"{self.__lignes}x{self.__colonnes}"), exist_ok=True)
-        with open(path.join('.', "sortie_list", f"{self.__lignes}x{self.__colonnes}", f"{name}_list.txt"), 'w+') as file:
+        makedirs(path.join(path.dirname(__file__), "sortie_list", f"{self.__lignes}x{self.__colonnes}"), exist_ok=True)
+        with open(path.join(path.dirname(__file__), "sortie_list", f"{self.__lignes}x{self.__colonnes}", f"{name}_list.txt"), 'w+') as file:
             file.write(str(output_grille))
+
+
+    @_timit
+    def _exhaustive(self) -> None:
+        visited_cells: list[Cellule] = []
+        current_cell = self.__grille[randint(0, self.__lignes - 1)][randint(0, self.__colonnes - 1)]
+        multis: list[Cellule] = []
+
+        while (len(multis) and len(visited_cells) != self.__colonnes * self.__lignes) or len(visited_cells) != self.__colonnes * self.__lignes:
+            current_cell.visited = True
+            if current_cell not in visited_cells: visited_cells.append(current_cell)
+
+            available_voisines_cells = [(i_cell, cell) for i_cell, cell in enumerate([current_cell.n_cell, current_cell.e_cell, current_cell.s_cell, current_cell.w_cell]) if cell and not cell.visited]
+
+            if len(available_voisines_cells):
+                choosen_cell_id, choosen_cell = available_voisines_cells[randint(0, len(available_voisines_cells) - 1)]
+
+                match choosen_cell_id:
+                    case 0:
+                        choosen_cell.south = False
+                    case 1:
+                        choosen_cell.west = False
+                    case 2:
+                        choosen_cell.north = False
+                    case 3:
+                        choosen_cell.east = False
+                
+                if len(available_voisines_cells) > 1:
+                    if current_cell not in multis: multis.append(current_cell)
+            else:
+                current_cell = multis[-1]
+                multis.pop()
+                continue
+        
+            current_cell = choosen_cell
+
+        entree = randint(0, self.__lignes - 1), 0
+        sortie = randint(0, self.__lignes - 1), self.__colonnes - 1
+
+        self.__grille[entree[0]][entree[1]].west = False
+        self.__grille[sortie[0]][sortie[1]].east = False
+
+        self.__scrumbled = True
 
     
     @classmethod
@@ -490,6 +556,7 @@ class Labyrinthe:
                     cell.traverse = 'wn'
 
         self.__resolved = True
+        self.__path = resolve_path
 
     @_timit
     def resolve(self) -> list[int]:
@@ -597,11 +664,84 @@ class Labyrinthe:
                 # Add the new_cell to the open list
                 open_list.append(new_cell)
 
+    def mat(self) -> None:
+        maze = []
+        for i_line, line in enumerate(self.__grille):
+            row = []
+            for i_colonne, cellule in enumerate(line):
+                row.append(1)
+                row.append(1 if cellule.north else 0)
+            row.append(1)
+
+            maze.append(row)
+            
+            row = []
+            for i_colonne, cellule in enumerate(line):
+                row.append(1 if cellule.west else 0)
+                row.append(0)
+
+                if i_colonne == self.__colonnes - 1:
+                    row.append(1 if cellule.east else 0)
+
+            maze.append(row)
+
+            if i_line == self.__lignes - 1:
+                row = []
+                for i_colonne, cellule in enumerate(line):
+                    row.append(1)
+                    row.append(1 if cellule.south else 0)
+                row.append(1)
+                maze.append(row)
+
+        _, ax = plt.subplots(figsize=(8,8))
+
+        ax.imshow(maze, cmap=plt.cm.binary, interpolation='nearest')
+
+        if self.__resolved:
+            new_x = [0, 1]
+            new_y = [self.__path[0] // self.__colonnes * 2 + 1, self.__path[0] // self.__colonnes * 2 + 1]
+
+            for i_cell, cell_id in enumerate(self.__path):
+                x_brut = cell_id - (cell_id // self.__colonnes) * self.__colonnes
+                x_last_brut = self.__path[i_cell - 1] - (self.__path[i_cell - 1] // self.__colonnes) * self.__colonnes
+                current_x = x_brut * 2 + 1
+
+                if i_cell != 0:
+                    if x_last_brut == x_brut:
+                        new_x.extend([current_x, current_x])
+                    else:
+                        if x_last_brut - x_brut == 1:
+                            new_x.extend([current_x + 1, current_x])
+                        else:
+                            new_x.extend([current_x - 1, current_x])
+
+                y_brut = cell_id // self.__colonnes
+                y_last_brut = self.__path[i_cell - 1] // self.__colonnes
+                current_y = y_brut * 2 + 1
+
+                if i_cell != 0:
+                    if y_last_brut == y_brut:
+                        new_y.extend([current_y, current_y])
+                    else:
+                        if y_last_brut - y_brut == 1:
+                            new_y.extend([current_y + 1, current_y])
+                        else:
+                            new_y.extend([current_y - 1, current_y])
+            
+            new_x.append(new_x[-1] + 1)
+            new_y.append(new_y[-1])
+
+            ax.plot(new_x, new_y, color='red', linewidth=2)
+        
+        ax.set_xticks([])
+        ax.set_yticks([])
+        
+        plt.show()
+
 
 if __name__ == "__main__":
-    lab = Labyrinthe.from_txt('.\\sortie_list\\250x250\\test_list.txt')
-    """ lab = Labyrinthe(20, 20)
-    lab.generate()
-    lab.save_list('test') """
-    #lab.resolve_a_star()
-    print(lab.resolve_a_star())
+    while True:
+        lab = Labyrinthe.exploration(100, 100)
+        lab.resolve_a_star()
+        lab.mat()
+        input()
