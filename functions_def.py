@@ -5,4 +5,11 @@ def fonction_tres_importante(prenom: str, age: int, nom = "Antoine") -> str | No
     else:
         return None
 
-print(fonction_tres_importante('A"B', 9))
+#print(fonction_tres_importante('A"B', 9))
+
+
+
+
+
+
+

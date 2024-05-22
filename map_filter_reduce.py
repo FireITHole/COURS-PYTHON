@@ -9,4 +9,4 @@ print(list(filter(lambda x: x%2, liste)))
 print(list(map(lambda x: x+1, liste)))
 
 # reduce
-print(reduce(lambda x, y: x*y, liste))
+print(reduce(lambda x, y: x+y, liste))

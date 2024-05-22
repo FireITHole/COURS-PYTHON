@@ -6,7 +6,7 @@ POST http://localhost:3001/api
 Content-Type: application/json
 
 {
-    "message": "test1"
+    "message": "toto"
 }
 
 ###
@@ -15,8 +15,8 @@ PUT http://localhost:3001/api
 Content-Type: application/json
 
 {
-    "old_message": "test4",
-    "new_message": "test5"
+    "old_message": "toto",
+    "new_message": "tata"
 }
 
 ###
@@ -25,5 +25,5 @@ DELETE http://localhost:3001/api
 Content-Type: application/json
 
 {
-    "message": "test5"
+    "message": "tata"
 }
