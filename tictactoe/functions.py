@@ -124,7 +124,7 @@ class TicTacToe:
                 self.__etat = 1
                 return
             
-        if self.__turn == len(self.__grille) ** 2:
+        if self.__turn == len(self.__grille) ** 2 - 1:
             self.__etat = 2
             return
             
