@@ -6,11 +6,8 @@ with open("rockyou.txt", "r", encoding='latin-1') as file:
 with open("hash.txt") as file:
     hash = file.read()
 
-flag = False
 for password in passwords:
     if compare(password, hash):
         print(f"Cracked! -> '{password}'")
-        flag = True
         break
-
-if not flag: print("Couldn't crack the password.")
+else: print("Couldn't crack the password.")
