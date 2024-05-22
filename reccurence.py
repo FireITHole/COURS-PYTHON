@@ -19,8 +19,8 @@ def sum_list(list: list) -> int:
 
     return sum_list(left) + sum_list(right)
 
-print(sum_list(range(1, 101)))
-print(sum(range(1, 101)))
+# print(sum_list(range(1, 101)))
+# print(sum(range(1, 101)))
 
 def factoriel(n: int) -> int:
     if n == 1:
@@ -28,4 +28,4 @@ def factoriel(n: int) -> int:
 
     return n * factoriel(n-1)
 
-print(factoriel(5))
+# print(factoriel(5))
