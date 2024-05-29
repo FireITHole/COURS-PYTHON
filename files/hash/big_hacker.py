@@ -58,8 +58,8 @@ def search(hash: str, min_len: int, max_len: int, charset = 0b11111, num_process
 
         args = [(hash, shuffled_charset, start, end, cur_len) for (start, end) in starts_ends]
         processes = []
-        for i, arg in enumerate(args):
-            p = Process(target=search_worker, args=(*arg, i, stop_event, return_dict, done_queue))
+        for arg in args:
+            p = Process(target=search_worker, args=(*arg, stop_event, return_dict, done_queue))
             processes.append(p)
             p.start()
 
