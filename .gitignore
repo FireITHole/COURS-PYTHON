@@ -4,3 +4,4 @@ docker/db-only/venv
 .vscode/settings.json
 db/venv
 labyrinthe/venv
+idees_exercices

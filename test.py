@@ -1,10 +1,30 @@
-liste_1: list[int] = [1, 2, 3]
-liste_2: list[str] = ['a', 'b', 'c']
-liste_3: list[float] = [1.2, 3.4, 5.6]
+PATH = "test.txt"
 
-resultat = []
+# Lecture dans un fichier
+with open(PATH, encoding="UTF-8") as file:
+    print(file.readlines())
 
-for nb, car, fl in zip(liste_1, liste_2, liste_3):
-    resultat.append([nb, car, fl])
+# Ecriture dans un fichier (attention destruction du contenu)
+with open(PATH, "w") as file:
+    file.write("coucou")
 
-print(resultat)
+# Append dans un fichier
+with open(PATH, "a", encoding="UTF-8") as file:
+    file.write('\n'.join(["Coucou!", "Comment ça va ?"]))
+
+
+
+def ecrit_list_str_file(lignes: list[str]) -> None:
+    nouvelles_lignes: list[str] = []
+
+    for ligne in lignes:
+        nouvelles_lignes.append(f"{ligne} ({len(ligne)})")
+
+    # nouvelles_lignes: list[str] = [f"{ligne} ({len(ligne)})" for ligne in lignes]
+
+    with open(PATH, "+w", encoding="UTF-8") as file:
+        file.write('\n'.join(nouvelles_lignes))
+
+PHRASES = ["Bonjour", "comment", "ça", "va ?", "qkjsdhjjkqshdjkhqsjkdhqjkshdkjqshsjkh"]
+
+ecrit_list_str_file(PHRASES)
