@@ -44,7 +44,7 @@ def search(hash: str, min_len: int, max_len: int, charset = 0b11111, num_process
 
     for cur_len in range(min_len, max_len + 1):
         cur_max_iters = len(shuffled_charset) ** cur_len
-        if verbose >= 3: print(f"Nombre de mots de passe possible de longueur {cur_len} : {cur_max_iters:,}")
+        if verbose >= 3: print(f"Nombre de mot de passe possible de longueur {cur_len} : {cur_max_iters:,}")
 
         amount_per_process = cur_max_iters // num_processes
         rest = cur_max_iters - (amount_per_process * num_processes)
