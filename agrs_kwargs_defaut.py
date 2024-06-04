@@ -1,12 +1,12 @@
 # *args permet de recevoir un nombre non connu d'arguments
-def somme(*args):
+def somme(*args, test: int):
     result = 0
     for arg in args:
         result += arg
-    return result
+    return result + test
 
 
-print(somme(1, 2, 3, 4))
+print(somme(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, test=10))
 
 liste: list = [2, 3, 4, 5]
 liste_2: list = [6, 7, 8, 9]
@@ -14,9 +14,16 @@ liste_2: list = [6, 7, 8, 9]
 # le caractère * permet de sortir les éléments d'une liste
 # print([liste, liste_2])
 # [[2, 3, 4, 5], [6, 7, 8, 9]]
-# print([*liste, *liste_2])
+print([*liste, *liste_2])
 # [2, 3, 4, 5, 6, 7, 8, 9]
 
+
+dictionnaire = {"nom": "Arnoux", "prénom": "Antoine", "animaux": [{"espece": "chien", "nom": "sunny"}, {"espece": "chat", "nom": "charli"}]}
+
+matrice = [[1, 2], [3, 4]]
+print(matrice[0][1])
+
+print(dictionnaire["animaux"][0]["nom"])
 
 # ** permet de décomposer un dictionnaire (ensemble clé -> valeur)
 def print_values(**kwargs):
