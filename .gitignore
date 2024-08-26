@@ -1,7 +1,7 @@
 docker/api/db
 docker/db-only/db
-docker/db-only/venv
 .vscode/settings.json
-db/venv
-labyrinthe/venv
 idees_exercices
+*venv
+*.pyc
+*.db

@@ -1,5 +1,5 @@
 # Les Interfaces et les Méthodes Abstraites
-
+![Image](https://miro.medium.com/v2/resize:fit:756/1*vjsWf2kTrZyT_oRvk8ph3w.png "titre")
 ## Introduction
 
 En Python, les interfaces et les méthodes abstraites sont des concepts essentiels pour la programmation orientée objet. Ils permettent de définir des contrats que les classes dérivées doivent respecter, assurant ainsi une structure et une cohérence dans le code.
