@@ -16,7 +16,7 @@ class Calculatrice:
         # Création de la zone d'affichage
         self.label_var = tk.StringVar()
         self.label = ttk.Label(self.root, font=("Arial", 14),
-                               textvariable=self.label_var, anchor="e", relief="solid", padding="0 5 0 5")
+                               textvariable=self.label_var, anchor="e", padding="0 5 0 5")
         self.label.pack(fill="x")
 
         # Définition des boutons de la calculatrice
@@ -27,12 +27,12 @@ class Calculatrice:
             'C', '0', '=', '+'
         ]
 
+        # Création du cadre pour les boutons
+        self.button_frame = tk.Frame(self.root)
+
         # Initialisation des valeurs de ligne et de colonne pour le placement des boutons
         self.row_val = 0
         self.col_val = 0
-
-        # Création du cadre pour les boutons
-        self.button_frame = tk.Frame(self.root)
 
         # Création et placement des boutons dans une grille
         for button in self.buttons:
