@@ -741,7 +741,7 @@ class Labyrinthe:
 
 if __name__ == "__main__":
     while True:
-        lab = Labyrinthe.exploration(100, 100)
+        lab = Labyrinthe.exploration(20, 20)
         lab.resolve_a_star()
         lab.mat()
         input()

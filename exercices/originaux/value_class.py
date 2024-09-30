@@ -17,7 +17,7 @@ class Personne(Parent, Parent2):
 
 antoine = Personne("antoine", 90)
 print(antoine.W)  # 80
-print(Personne.Y)  # ERREUR / 70
+print(Personne.Y)  # 70
 print(antoine.poid)  # 90
-print(Personne.W)  # ERREUR / 80
+print(Personne.W)  # 80
 print(Personne.poid)  # ERREUR
